@@ -7,8 +7,6 @@ const authRouter = require("./routes/userAuth");
 const redisClient = require('./config/redis');
 const problemRouter = require("./routes/problemCreator");
 const submitRouter = require("./routes/submit")
-const aiRouter = require("./routes/aiChatting")
-const videoRouter = require("./routes/videoCreator");
 const cors = require('cors')
 
 // console.log("Hello")
@@ -24,14 +22,13 @@ app.use(cookieParser());
 app.use('/user',authRouter);
 app.use('/problem',problemRouter);
 app.use('/submission',submitRouter);
-app.use('/ai',aiRouter);
-app.use("/video",videoRouter);
 
 
 const InitalizeConnection = async ()=>{
     try{
 
-        await Promise.all([main(),redisClient.connect()]);
+        await Promise.all([main()]);
+        // await redisClient.connect(); // Commented out for now
         console.log("DB Connected");
         
         app.listen(process.env.PORT, ()=>{

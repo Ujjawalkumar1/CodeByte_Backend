@@ -2,7 +2,6 @@ const {getLanguageById,submitBatch,submitToken} = require("../utils/problemUtili
 const Problem = require("../models/problem");
 const User = require("../models/user");
 const Submission = require("../models/submission");
-const SolutionVideo = require("../models/solutionVideo")
 
 const createProblem = async (req,res)=>{
    
@@ -20,7 +19,7 @@ const createProblem = async (req,res)=>{
 
         // source_code:
         // language_id:
-        // stdin: 
+        // stdin:
         // expectedOutput:
 
         const languageId = getLanguageById(language);
@@ -54,9 +53,14 @@ const createProblem = async (req,res)=>{
 
       }
 
+// means this question provided by admin  is giving correct output for 
+// all the test cases provided by admin and for all the language provided by admin
+// so we can store it in our DB
 
       // We can store it in our DB
 
+
+      
     const userProblem =  await Problem.create({
         ...req.body,
         problemCreator: req.result._id
@@ -170,24 +174,8 @@ const getProblemById = async(req,res)=>{
 
     const getProblem = await Problem.findById(id).select('_id title description difficulty tags visibleTestCases startCode referenceSolution ');
    
-    // video ka jo bhi url wagera le aao
-
    if(!getProblem)
     return res.status(404).send("Problem is Missing");
-
-   const videos = await SolutionVideo.findOne({problemId:id});
-
-   if(videos){   
-    
-   const responseData = {
-    ...getProblem.toObject(),
-    secureUrl:videos.secureUrl,
-    thumbnailUrl : videos.thumbnailUrl,
-    duration : videos.duration,
-   } 
-  
-   return res.status(200).send(responseData);
-   }
     
    res.status(200).send(getProblem);
 
